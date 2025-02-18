@@ -1,0 +1,8 @@
+streamlit==1.37.0
+keboola-streamlit
+streamlit-extras
+streamlit-card
+extra-streamlit-components
+streamlit-autorefresh
+streamlit-aggrid
+snowflake-snowpark-python[pandas]
