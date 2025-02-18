@@ -36,7 +36,7 @@ from keboola_streamlit import KeboolaStreamlit
 
 
 # Initialize Keboola integration client
-keboola=KeboolaStreamlit(st.secrets["kbc_url"], st.secrets["STORAGE_API_TOKEN"])
+keboola=KeboolaStreamlit(st.secrets["kbc_url"], st.secrets["kbc_token"])
 license_key=keboola.aggrid_license_key
 
 # Set debug mode based on secrets configuration
@@ -174,9 +174,9 @@ def main():
             st.stop()
     except KeyError:
         # Line for DEV
-        # st.session_state['user_role'] = 'DEV'
-        st.error("Nepodařilo se rozpoznat roli uživatele. Kontaktujte administrátora.")
-        st.stop()
+        st.session_state['user_role'] = 'DEV'
+        #st.error("Nepodařilo se rozpoznat roli uživatele. Kontaktujte administrátora.")
+        #st.stop()
     
     if st.session_state['df'].empty:
         with st.spinner("Načítám data..."):
