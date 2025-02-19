@@ -1,4 +1,4 @@
-streamlit==1.39.0
+streamlit==1.37.0
 keboola-streamlit==0.1.1
-streamlit-aggrid==1.0.5
+streamlit-aggrid
 snowflake-snowpark-python[pandas]
