@@ -1,9 +1,7 @@
 import streamlit as st
 import base64
 import os
-from streamlit_extras.stylable_container import stylable_container
 
-    
 def get_image_base64(image_path: str):
     """Get base64 representation of an image.
     Args:
@@ -20,57 +18,57 @@ def display_header(text: str = ''):
     LOGO = get_image_base64(image_path)
     LABEL = "Kulaté stoly"
     
-    # Stylable container with smaller padding and adjusted CSS
-    with stylable_container(
-        key="container_with_border",
-        css_styles="""
-            {
-                background-color: #2870ed;
-                border: 1px solid rgba(49, 51, 63, 0.2);
-                border-radius: 0.5rem;
-                padding: 0.1em;
-                width: 100%;  /* Full width for blue box */
-                min-height: 70px;  /* Ensures enough height for logo and text */
-            }
-        """,
-    ):
-        with st.container():
-            st.markdown(f"""
-                <div class="compact-header-container" style="
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: space-between; 
-                    padding: 0px 20px;  
-                    flex-wrap: nowrap;  /* Prevents line breaks */
-                    width: 100%;
-                ">
-                    <div style="
-                        display: flex; 
-                        flex-direction: column;
-                        align-items: flex-start;
-                    ">
-                        <p style="
-                            color: #FFFFFF;
-                            font-size: 20px;
-                            margin: 0;
-                        ">{LABEL}</p>
-                        <p style="
-                            color: lightGrey;
-                            font-size: 12px;  
-                            margin: 0;
-                            padding-bottom: 0px;
-                        ">{text}</p>
-                    </div>
-                    <img src="data:image/png;base64,{LOGO}" alt="Logo" style="
-                        height: 60px; 
-                        max-width: 100%;
-                        margin-left: auto;  /* Pushes logo to the right */
-                        padding-top: 0;
-                    ">
+    # Custom CSS for the header
+    st.markdown("""
+        <style>
+        .header-container {
+            background-color: #2870ed;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.5em 1em;
+            margin-bottom: 1em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            width: 100%;
+        }
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .header-title {
+            color: #FFFFFF;
+            font-size: 20px;
+            margin: 0;
+            font-weight: 600;
+        }
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin: 0;
+        }
+        .header-logo {
+            height: 60px;
+            max-width: 100%;
+            margin-left: auto;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Header HTML
+    st.markdown(f"""
+        <div class="header-container">
+            <div class="header-content">
+                <div class="header-text">
+                    <p class="header-title">{LABEL}</p>
+                    <p class="header-subtitle">{text}</p>
                 </div>
-                """, unsafe_allow_html=True
-            )
-
-
-
-            
+                <img src="data:image/png;base64,{LOGO}" alt="Logo" class="header-logo">
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
