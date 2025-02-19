@@ -20,7 +20,7 @@ def setup_aggrid(df, editable_columns, columns_to_display, user_role, user_email
     - editable_columns (list): Columns that should be editable based on user role.
     - columns_to_display (list): Columns to display in the grid.
     - user_role (str): The user's role, affecting edit permissions.
-    - user_email (str): The user’s email, used to control editability for certain columns.
+    - user_email (str): The user's email, used to control editability for certain columns.
 
     Returns:
     - dict: Configuration options for AgGrid, tailored to user roles and edit permissions.
@@ -42,7 +42,7 @@ def setup_aggrid(df, editable_columns, columns_to_display, user_role, user_email
         }
     )
     
-    gb.configure_default_column(editable=False, filterable=True)
+    gb.configure_default_column(editable=False)
 
     # Apply filtering to display columns
     for col in columns_to_display:
@@ -108,11 +108,26 @@ def setup_aggrid(df, editable_columns, columns_to_display, user_role, user_email
     # Set up cell editors for performance columns
     gb.configure_column("HODNOTY", cellEditor="agSelectCellEditor", cellEditorParams={'values': [0, 1, 2, 3, 4, 5]})
     gb.configure_column("VYKON", cellEditor="agSelectCellEditor", cellEditorParams={'values': [0, 1, 2, 3, 4, 5]})
-    for col in [col for col in columns_to_display if col not in ["IS_LOCKED"]]+editable_columns:
-        gb.configure_column(col, minWidth=100)
+    
+    # Remove the blanket minWidth setting and configure specific columns
     gb.configure_column("POZNAMKY", minWidth=400)
-    gb.configure_column("IS_LOCKED", minWidth=70)
-
+    gb.configure_column("IS_LOCKED", minWidth=50)
+    gb.configure_column("FULL_NAME", minWidth=150)
+    gb.configure_column("DIRECT_MANAGER_FULL_NAME", minWidth=150)
+    
+    # Configure columns that should have minimal width
+    for col in ["HODNOTY", "VYKON", "HODNOTY_SYSTEM", "VYKON_SYSTEM"]:
+        gb.configure_column(col, width=50)
+    
+    # Configure yes/no columns to be compact
+    for col in ["NASTUPCE", "MOZNY_KARIERNI_POSUN"]:
+        gb.configure_column(col, width=100)
+    
+    # Configure autosize strategy
+    gb.configure_grid_options(
+        autoSizeStrategy={'type': 'fitCellContents'},
+        suppressColumnVirtualisation=True
+    )
 
     options = ["nízký", "střední", "vysoký", 0]
     gb.configure_column("POTENCIAL", cellEditor="agSelectCellEditor", cellEditorParams={'values': options})
@@ -215,16 +230,6 @@ def setup_aggrid(df, editable_columns, columns_to_display, user_role, user_email
     for col in ['LOGIN', 'L2_ORGANIZATION_UNIT_NAME_CZ', 'L3_ORGANIZATION_UNIT_NAME_CZ', 'L4_ORGANIZATION_UNIT_NAME_CZ', 
                 'TEAM_CODE', 'L2_HEAD_OF_UNIT_FULL_NAME', 'L3_HEAD_OF_UNIT_FULL_NAME','L4_HEAD_OF_UNIT_FULL_NAME']:
         gb.configure_column(col, cellStyle={'backgroundColor': '#e7effd', 'color': '#2870ed'})
-
-    # Auto-size columns based on content
-    auto_size_js = JsCode('''
-    function(params) {
-        params.api.sizeColumnsToFit();
-        let allColumnIds = params.columnApi.getAllColumns().map(col => col.colId);
-        params.columnApi.autoSizeColumns(allColumnIds, false);
-    }
-    ''')
-    gb.configure_grid_options(onFirstDataRendered=auto_size_js)
 
     # Load and apply friendly column names from JSON
     file_path = os.path.join(os.path.dirname(__file__), './static/column_names.json')
